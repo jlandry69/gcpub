@@ -38,13 +38,14 @@ BASEDIR=$(dirname "$SCRIPT")
 MEM=memory_requirement (We use 48Gb)
 QUEUE=queue_name
 CPU=number_of_CPUs (We use 8)
+MACHINE=name_of_the_submission_machine
 d=$(date +'%a-%y%m%d-%H%M')
 
 SL=`grep "^submit_log[^A-Za-z]" $1/SampleSheetConverter.cfg | sed 's/^.*=[ \t]*//'`
 
 bsub_cmd="bsub -q ${QUEUE} -n ${CPU} -R \"span[hosts=1] select[mem>${MEM}]\" -M ${MEM} -J gcpip[1-8] -o ${SL}/pipeline_output_$d-PID$$ -e ${SL}/pipeline_error_$d-PID$$ -W 9000:00 ${BASEDIR}/pipeline.sh $1 $2"
 
-echo $bsub_cmd | ssh solexa@submaster $(< /dev/fd/0)
+echo $bsub_cmd | ssh${MACHINE} $(< /dev/fd/0)
 ```
 Running Archiving
 -----------------
@@ -60,9 +61,10 @@ fi
 
 BASEDIR=$(dirname "$SCRIPT")
 MEM=memory_requirement (We use 2Gb)
+MACHINE=name_of_the_submission_machine
 SL=`grep "^submit_log[^A-Za-z]" $1/SampleSheetConverter.cfg | sed 's/^.*=[ \t]*//'`
 d=$(date +'%a-%y%m%d-%H%M')
-
-ssh solexa@submaster bsub -M ${MEM} -J archive -o ${SL}/archive_output.$d-PID$$ -e ${SL}/archive_error.$d-PID$$ -W 9000:00 ${BASEDIR}/archive.sh $1 $2
+bsub_cmd="bsub -M ${MEM} -J archive -o ${SL}/archive_output.$d-PID$$ -e ${SL}/archive_error.$d-PID$$ -W 9000:00 ${BASEDIR}/archive.sh $1 $2"
+echo $bsub_cmd | ssh ${MACHINE} $(< /dev/fd/0)
 ```
 
