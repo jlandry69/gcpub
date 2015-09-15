@@ -24,7 +24,7 @@ The config file (SampleSheetConverter.cfg) defines the different tool paths used
 Running GCpipeline
 ------------------
 
-This is an example how to submit the pipeline to cluster using LSF manager:
+This is an example how to submit the pipeline to a cluster using LSF manager:
 ```
 #! /usr/bin/env bash
 
@@ -40,9 +40,29 @@ QUEUE=queue_name
 CPU=number_of_CPUs (We use 8)
 d=$(date +'%a-%y%m%d-%H%M')
 
-SL=`grep "^submit_log[^A-Za-z]" $1/SampleSheet_lane${LANE}.cfg | sed 's/^.*=[ \t]*//'`
+SL=`grep "^submit_log[^A-Za-z]" $1/SampleSheetConverter.cfg | sed 's/^.*=[ \t]*//'`
 
 bsub_cmd="bsub -q ${QUEUE} -n ${CPU} -R \"span[hosts=1] select[mem>${MEM}]\" -M ${MEM} -J gcpip[1-8] -o ${SL}/pipeline_output_$d-PID$$ -e ${SL}/pipeline_error_$d-PID$$ -W 9000:00 ${BASEDIR}/pipeline.sh $1 $2"
 
 echo $bsub_cmd | ssh solexa@submaster $(< /dev/fd/0)
 ```
+Running Archiving
+-----------------
+
+This is an example how to submit the archiving script to a cluster using LSF manager:
+```
+#! /usr/bin/env bash
+
+if [ $# -eq 0 ] || [ $# -gt 2 ]; then
+    echo "Usage: $0 <run_folder> [dest_folder]"
+    exit 1
+fi
+
+BASEDIR=$(dirname "$SCRIPT")
+MEM=memory_requirement (We use 2Gb)
+SL=`grep "^submit_log[^A-Za-z]" $1/SampleSheetConverter.cfg | sed 's/^.*=[ \t]*//'`
+d=$(date +'%a-%y%m%d-%H%M')
+
+ssh solexa@submaster bsub -M ${MEM} -J archive -o ${SL}/archive_output.$d-PID$$ -e ${SL}/archive_error.$d-PID$$ -W 9000:00 ${BASEDIR}/archive.sh $1 $2
+```
+
