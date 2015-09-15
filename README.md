@@ -25,7 +25,7 @@ Running GCpipeline
 ------------------
 
 This is an example how to submit the pipeline to cluster using LSF manager:
-
+```
 #! /usr/bin/env bash
 
 if [ $# -eq 0 ] || [ $# -gt 2 ]; then
@@ -45,4 +45,4 @@ SL=`grep "^submit_log[^A-Za-z]" $1/SampleSheet_lane${LANE}.cfg | sed 's/^.*=[ \t
 bsub_cmd="bsub -q ${QUEUE} -n ${CPU} -R \"span[hosts=1] select[mem>${MEM}]\" -M ${MEM} -J gcpip[1-8] -o ${SL}/pipeline_output_$d-PID$$ -e ${SL}/pipeline_error_$d-PID$$ -W 9000:00 ${BASEDIR}/pipeline.sh $1 $2"
 
 echo $bsub_cmd | ssh solexa@submaster $(< /dev/fd/0)
-
+```
