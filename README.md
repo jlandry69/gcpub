@@ -15,13 +15,13 @@ Installation
 
 You can build the GCpipeline from source. Dependencies are included as submodules so you need to do a recursive clone. 
 
-`git clone --recursive https://github.com/tobiasrausch/gcpub.git`
+`git clone --recursive git@github.com:jlandry69/gcpub.git`
 
 `cd gcpub/`
 
 `make all`
 
-The config file (SampleSheetConverter.cfg) defines the different tool paths used by the pipeline.
+The config file (SampleSheetConverter.cfg) defines the different tools/volumes paths used by the pipeline.
 
 Running GCpipeline
 ------------------
