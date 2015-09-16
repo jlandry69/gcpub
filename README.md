@@ -8,7 +8,7 @@ The different steps are:
 * alignment to the genome of interest
 * quality control metrics and quality control plots
 
-Additionally, we provide also a archiving script which cleans up the processed data. Then a tarball of the run folder is written to the chosen drive. Once the tarball is created an entry is written to the archive_inventory.txt file. QC related files are archived under a specific folder (flowcell_qc_archive). In particular these are the FastQC reports and a minimal set of files needed to use the Illumina Sequencing Analysis viewer.  
+Additionally, we provide an archiving script which, first, cleans up the processed data, second writes a tarball of the run folder and finally archives QC related files (FastQC reports and a minimal set of files needed to use the Illumina Sequencing Analysis viewer).  
 
 Installation
 ------------
