@@ -1,12 +1,14 @@
 GCpipeline
 ==========
 
-GCpipeline is a suite of tools taking as input illumina sequencing data (as bcl files). 
+GCpipeline is a suite of tools taking as input illumina sequencing data (as bcl files) and producing fastq files as well as quality control metrics and plots. 
 The different steps are:
 * bcl to fastq convertion
 * barcode demultiplexing (in-line or illumina multiplex scheme)
 * alignment to the genome of interest
-* quality control metrics and quality control plot
+* quality control metrics and quality control plots
+
+Additionally, 
 
 Installation
 ------------
@@ -24,15 +26,10 @@ The config file (SampleSheetConverter.cfg) defines the different tool paths used
 Running GCpipeline
 ------------------
 
-This is an example how to submit the pipeline to a cluster using LSF manager:
+This is an example how to submit the pipeline (pipeline.sh) to a cluster using LSF manager. It takes one required argument (<run_folder>) and one optional argument (N - number of mismatch allowed during demultiplexing):
+Usage: $0 <run_folder> [N (allow N mismatches - default is 0)]
+
 ```
-#! /usr/bin/env bash
-
-if [ $# -eq 0 ] || [ $# -gt 2 ]; then
-    echo "Usage: $0 <run_folder> [N (allow N mismatches)]"
-    exit 1
-fi
-
 SCRIPT=$(readlink -f "$0")
 BASEDIR=$(dirname "$SCRIPT")
 MEM=memory_requirement (We use 48Gb)
@@ -50,15 +47,10 @@ echo $bsub_cmd | ssh${MACHINE} $(< /dev/fd/0)
 Running Archiving
 -----------------
 
-This is an example how to submit the archiving script to a cluster using LSF manager:
+This is an example how to submit the archiving script (archiving.sh) to a cluster using LSF manager. It takes one required (<run_folder>) argument and one optional argument (<dest_folder>):
+Usage: $0 <run_folder> [dest_folder]
+
 ```
-#! /usr/bin/env bash
-
-if [ $# -eq 0 ] || [ $# -gt 2 ]; then
-    echo "Usage: $0 <run_folder> [dest_folder]"
-    exit 1
-fi
-
 BASEDIR=$(dirname "$SCRIPT")
 MEM=memory_requirement (We use 2Gb)
 MACHINE=name_of_the_submission_machine
