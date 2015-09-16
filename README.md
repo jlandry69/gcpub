@@ -26,7 +26,7 @@ The config file (SampleSheetConverter.cfg) defines the different tools/volumes p
 Running GCpipeline
 ------------------
 
-This is an example how to submit the pipeline (pipeline.sh) to a cluster using [LSF](http://www-03.ibm.com/systems/platformcomputing/products/lsf/processmanager.html title="LSF") manager. It takes one required argument: the run_folder that you want to process and the number of mismatch allowed during demultiplexing as one optional argument (default is 0).
+This is an example how to submit the pipeline (pipeline.sh) to a cluster using [LSF](http://www-03.ibm.com/systems/platformcomputing/products/lsf/processmanager.html) manager. It takes one required argument: the run_folder that you want to process and the number of mismatch allowed during demultiplexing as one optional argument (default is 0).
 
 Usage: $0 run_folder [N (allow N mismatches)]
 
@@ -37,7 +37,7 @@ bsub -q ${QUEUE_NAME} -n ${NUMBER_CPU} -M ${MEMORY_REQUIREMENT} -J ${JOB_NAME}[1
 Running Archiving
 -----------------
 
-This is an example how to submit the archiving script (archiving.sh) to a cluster using LSF manager. It takes one required argument: the run_folder that you want to archive, and the destination folder as one optional argument (default is current directory).
+This is an example how to submit the archiving script (archiving.sh) to a cluster using [LSF](http://www-03.ibm.com/systems/platformcomputing/products/lsf/processmanager.html) manager. It takes one required argument: the run_folder that you want to archive, and the destination folder as one optional argument (default is current directory).
 
 Usage: $0 run_folder [dest_folder]
 
