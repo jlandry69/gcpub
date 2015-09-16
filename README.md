@@ -26,24 +26,13 @@ The config file (SampleSheetConverter.cfg) defines the different tools/volumes p
 Running GCpipeline
 ------------------
 
-This is an example how to submit the pipeline (pipeline.sh) to a cluster using LSF manager. It takes one required argument: the run_folder that you want to process and the number of mismatch allowed during demultiplexing as one optional argument (default is 0).
+This is an example how to submit the pipeline (pipeline.sh) to a cluster using [LSF](http://www-03.ibm.com/systems/platformcomputing/products/lsf/processmanager.html title="LSF") manager. It takes one required argument: the run_folder that you want to process and the number of mismatch allowed during demultiplexing as one optional argument (default is 0).
 
 Usage: $0 run_folder [N (allow N mismatches)]
 
+Please find below an example of the bsub command to start the pipeline on a LSF cluster:
 ```
-SCRIPT=$(readlink -f "$0")
-BASEDIR=$(dirname "$SCRIPT")
-MEM=memory_requirement (We use 48Gb)
-QUEUE=queue_name
-CPU=number_of_CPUs (We use 8)
-MACHINE=name_of_the_submission_machine
-d=$(date +'%a-%y%m%d-%H%M')
-
-SL=`grep "^submit_log[^A-Za-z]" $1/SampleSheetConverter.cfg | sed 's/^.*=[ \t]*//'`
-
-bsub_cmd="bsub -q ${QUEUE} -n ${CPU} -R \"span[hosts=1] select[mem>${MEM}]\" -M ${MEM} -J gcpip[1-8] -o ${SL}/pipeline_output_$d-PID$$ -e ${SL}/pipeline_error_$d-PID$$ -W 9000:00 ${BASEDIR}/pipeline.sh $1 $2"
-
-echo $bsub_cmd | ssh${MACHINE} $(< /dev/fd/0)
+bsub -q ${QUEUE_NAME} -n ${NUMBER_CPU} -M ${MEMORY_REQUIREMENT} -J ${JOB_NAME}[1-8] -o pipeline_output.txt -e pipeline_error.txt path_to_pipeline.sh path_to_run_folder [N - number of mismatches allowed]"
 ```
 Running Archiving
 -----------------
@@ -52,12 +41,7 @@ This is an example how to submit the archiving script (archiving.sh) to a cluste
 
 Usage: $0 run_folder [dest_folder]
 
+PLease find below an example of the bsub command to start the archiving on a LSF cluster:
 ```
-BASEDIR=$(dirname "$SCRIPT")
-MEM=memory_requirement (We use 2Gb)
-MACHINE=name_of_the_submission_machine
-SL=`grep "^submit_log[^A-Za-z]" $1/SampleSheetConverter.cfg | sed 's/^.*=[ \t]*//'`
-d=$(date +'%a-%y%m%d-%H%M')
-bsub_cmd="bsub -M ${MEM} -J archive -o ${SL}/archive_output.$d-PID$$ -e ${SL}/archive_error.$d-PID$$ -W 9000:00 ${BASEDIR}/archive.sh $1 $2"
-echo $bsub_cmd | ssh ${MACHINE} $(< /dev/fd/0)
+bsub -q ${QUEUE_NAME} -M ${MEMORY_REQUIREMENT} -J ${JOB_NAME} -o archive_output.txt -e archive_error.txt path_to_archive.sh path_to_run_folder [destination_folder]"
 ```
