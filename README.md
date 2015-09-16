@@ -8,7 +8,7 @@ The different steps are:
 * alignment to the genome of interest
 * quality control metrics and quality control plots
 
-Additionally, 
+Additionally, we provide also a archiving script which cleans up the processed data. Then a tarball of the run folder is written to the chosen drive. Once the tarball is created an entry is written to the archive_inventory.txt file. QC related files are archived under a specific folder (flowcell_qc_archive). In particular these are the FastQC reports and a minimal set of files needed to use the Illumina Sequencing Analysis viewer.  
 
 Installation
 ------------
@@ -27,6 +27,7 @@ Running GCpipeline
 ------------------
 
 This is an example how to submit the pipeline (pipeline.sh) to a cluster using LSF manager. It takes one required argument: the run_folder that you want to process and the number of mismatch allowed during demultiplexing as one optional argument (default is 0).
+
 Usage: $0 run_folder [N (allow N mismatches)]
 
 ```
@@ -47,7 +48,8 @@ echo $bsub_cmd | ssh${MACHINE} $(< /dev/fd/0)
 Running Archiving
 -----------------
 
-This is an example how to submit the archiving script (archiving.sh) to a cluster using LSF manager. It takes one required argument: the run_folder that you want to archive, and the destination folder as  one optional argument (default is current directory).
+This is an example how to submit the archiving script (archiving.sh) to a cluster using LSF manager. It takes one required argument: the run_folder that you want to archive, and the destination folder as one optional argument (default is current directory).
+
 Usage: $0 run_folder [dest_folder]
 
 ```
@@ -59,4 +61,3 @@ d=$(date +'%a-%y%m%d-%H%M')
 bsub_cmd="bsub -M ${MEM} -J archive -o ${SL}/archive_output.$d-PID$$ -e ${SL}/archive_error.$d-PID$$ -W 9000:00 ${BASEDIR}/archive.sh $1 $2"
 echo $bsub_cmd | ssh ${MACHINE} $(< /dev/fd/0)
 ```
-
