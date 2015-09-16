@@ -26,7 +26,7 @@ The config file (SampleSheetConverter.cfg) defines the different tool paths used
 Running GCpipeline
 ------------------
 
-This is an example how to submit the pipeline (pipeline.sh) to a cluster using LSF manager. It takes one required argument: the run_folder that you want to process and the number of mismatch allowed during demultiplexing as one optional argument (default is 0):
+This is an example how to submit the pipeline (pipeline.sh) to a cluster using LSF manager. It takes one required argument: the run_folder that you want to process and the number of mismatch allowed during demultiplexing as one optional argument (default is 0).
 Usage: $0 run_folder [N (allow N mismatches)]
 
 ```
@@ -47,7 +47,7 @@ echo $bsub_cmd | ssh${MACHINE} $(< /dev/fd/0)
 Running Archiving
 -----------------
 
-This is an example how to submit the archiving script (archiving.sh) to a cluster using LSF manager. It takes one required argument: the run_folder that you want to archive, and the destination folder as  one optional argument (default is current directory):
+This is an example how to submit the archiving script (archiving.sh) to a cluster using LSF manager. It takes one required argument: the run_folder that you want to archive, and the destination folder as  one optional argument (default is current directory).
 Usage: $0 run_folder [dest_folder]
 
 ```
