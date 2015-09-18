@@ -5,6 +5,9 @@ if [ $# -eq 0 ] || [ $# -gt 2 ]; then
     exit 1
 fi
 
+SCRIPT=$(readlink -f "$0")
+BASEDIR=$(dirname "$SCRIPT")
+
 # User parameter, the run folder
 FOLDER=$1
 
@@ -17,11 +20,11 @@ then
     CFILE=${BASEDIR}/../gcpriv/SampleSheetConverter.cfg
 else
     CFILE=${BASEDIR}/SampleSheetConverter.cfg
-
+fi
 # Paths
 ARCVOL=`grep "^archiving_path[^A-Za-z]" ${CFILE} | sed 's/^.*=[ \t]*//'`
 QCVOL=`grep "^fqc_path[^A-Za-z]" ${CFILE} | sed 's/^.*=[ \t]*//'`
-DBCMD=`grep "^db_cmd[^A-Za-z]" ${CFILE} | sed 's/^.*=[ \t]*//'`
+DBCMD=`grep "^db_script[^A-Za-z]" ${CFILE} | sed 's/^.*=[ \t]*//'`
 sendEmail=`grep "^send_email[^A-Za-z]" ${CFILE} | sed 's/^.*=[ \t]*//'`
 # optionally pass a directory as 2nd arg to force writing the tarball to that directory
 if [ $# -eq 2 ]; then
@@ -50,8 +53,8 @@ if [ -f ${FOLDER}/RunInfo.xml ]
 		  if [ -f ${FOLDER}/SampleSheetOriginal.csv ]
 		      then
 		      cd ${FOLDER}/../
-		      tar -czf ${QC_VOL}/${RUN}.tar.gz ${RUN}/Aligned_lane*/summary_stats ${RUN}/Aligned_lane*/Project_*/Summary_Stats_*/Sample_Summary.htm ${RUN}/SampleSheetOriginal.* ${RUN}/InterOp/ ${RUN}/RunInfo.xml ${RUN}/runParameters.xml ${RUN}/Unaligned*/Basecall_Stats_*/Demultiplex_Stats.htm ${RUN}/Aligned_lane*/Flowcell_Summary_*.htm ${RUN}/Unaligned*/Basecall_Stats_*/IVC.htm ${RUN}/Unaligned*/Basecall_Stats_*/Plots/s_[1-8]_[A-Za-z]*.png
-		      chmod go-wx ${QC_VOL}/${RUN}.tar.gz
+		      tar -czf ${QCVOL}/${RUN}.tar.gz ${RUN}/Aligned_lane*/summary_stats ${RUN}/Aligned_lane*/Project_*/Summary_Stats_*/Sample_Summary.htm ${RUN}/SampleSheetOriginal.* ${RUN}/InterOp/ ${RUN}/RunInfo.xml ${RUN}/runParameters.xml ${RUN}/Unaligned*/Basecall_Stats_*/Demultiplex_Stats.htm ${RUN}/Aligned_lane*/Flowcell_Summary_*.htm ${RUN}/Unaligned*/Basecall_Stats_*/IVC.htm ${RUN}/Unaligned*/Basecall_Stats_*/Plots/s_[1-8]_[A-Za-z]*.png
+		      chmod go-wx ${QCVOL}/${RUN}.tar.gz
 		  fi
 
 		  # Clean-up processed data
@@ -69,7 +72,7 @@ if [ -f ${FOLDER}/RunInfo.xml ]
 		  cd ..
 		  
 		  # Upload Run metrics info to db
-                  ${DBCMD}
+                  ${DBCMD} ${QCVOL}/${RUN}.tar.gz
 		  
 		  # Tar.gz run folder
 		  echo ${LOC}/${RUN}.tar.gz > ${RUN}.email.txt
