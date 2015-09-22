@@ -19,7 +19,7 @@ then
     CFILE=${BASEDIR}/../gcpriv/SampleSheetConverter.cfg
 else
     CFILE=${BASEDIR}/SampleSheetConverter.cfg
-
+fi
 # Tools
 SAMTOOLS=${BASEDIR}/src/samtools/samtools
 BWA=${BASEDIR}/src/bwa/bwa
@@ -40,46 +40,46 @@ if [ -f ${FOLDER}/${LOGF}/lane${LANE}_barcodes.txt ]
 then
     if [ -f ${FOLDER}/SampleSheet_lane${LANE}.cfg ]
     then
-	SAMPLEARR=( `cut -f 1 ${FOLDER}/${LOGF}/lane${LANE}_barcodes.txt | tr '\n' ' '` )
-	PAIRED=`grep "^paired[^A-Za-z]" ${FOLDER}/SampleSheet_lane${LANE}.cfg | sed 's/^.*=[ \t]*//'`
+		SAMPLEARR=( `cut -f 1 ${FOLDER}/${LOGF}/lane${LANE}_barcodes.txt | tr '\n' ' '` )
+		PAIRED=`grep "^paired[^A-Za-z]" ${FOLDER}/SampleSheet_lane${LANE}.cfg | sed 's/^.*=[ \t]*//'`
 
-	# Create stats folder
-	mkdir -p ${STATSFOLDER}
-	if [ $? -ne 0 ]
-	then
-	    echo "ERROR: Cannot create stats folder."
-	    exit 1;
-	fi
+		# Create stats folder
+		mkdir -p ${STATSFOLDER}
+		if [ $? -ne 0 ]
+		then
+	    	echo "ERROR: Cannot create stats folder."
+	    	exit 1;
+		fi
 
-	# Fastqc & Stats
-	cd ${FOLDER}/Aligned_lane${LANE}
-	for ((  i = 0 ;  i < ${#SAMPLEARR[@]};  i++  ))
-	do
-	    if [ ${PAIRED} == "SE" ]
-	    then
-		if [ -f ${SAMPLEARR[$i]}_sequence.txt.gz ]
-		then
-		    ${FASTQC_BIN} -o ${STATSFOLDER} --noextract ${SAMPLEARR[$i]}_sequence.txt.gz
-		fi
-	    elif [ ${PAIRED} == "PE" ]
-	    then
-		if [ -f ${SAMPLEARR[$i]}_1_sequence.txt.gz ]
-		then
-		    ${FASTQC_BIN} -o ${STATSFOLDER} --noextract ${SAMPLEARR[$i]}_1_sequence.txt.gz
-		fi
-		if [ -f ${SAMPLEARR[$i]}_2_sequence.txt.gz ]
-		then
-		    ${FASTQC_BIN} -o ${STATSFOLDER} --noextract ${SAMPLEARR[$i]}_2_sequence.txt.gz
-		fi
-	    fi
-	    if [ -f ${SAMPLEARR[$i]}_sequence.bam ]
-	    then
-		OUTPREFIX=${SAMPLEARR[$i]}
-		${DELLY}/src/stats -o ${STATSFOLDER}/${OUTPREFIX}.summary.txt -i ${STATSFOLDER}/${OUTPREFIX}.insert.txt ${SAMPLEARR[$i]}_sequence.bam
-		${DELLY}/src/stats -k -o ${STATSFOLDER}/${OUTPREFIX}.summary.cfg ${SAMPLEARR[$i]}_sequence.bam
-		Rscript ${DELLY}/R/isize.R ${STATSFOLDER}/${OUTPREFIX}.insert.txt
-	    fi
-	done
+		# Fastqc & Stats
+		cd ${FOLDER}/Aligned_lane${LANE}
+		for ((  i = 0 ;  i < ${#SAMPLEARR[@]};  i++  ))
+		do
+	    	if [ ${PAIRED} == "SE" ]
+	    	then
+				if [ -f ${SAMPLEARR[$i]}_sequence.txt.gz ]
+				then
+		    		${FASTQC_BIN} -o ${STATSFOLDER} --noextract ${SAMPLEARR[$i]}_sequence.txt.gz
+				fi
+	    	elif [ ${PAIRED} == "PE" ]
+	    	then
+				if [ -f ${SAMPLEARR[$i]}_1_sequence.txt.gz ]
+				then
+		    		${FASTQC_BIN} -o ${STATSFOLDER} --noextract ${SAMPLEARR[$i]}_1_sequence.txt.gz
+				fi
+				if [ -f ${SAMPLEARR[$i]}_2_sequence.txt.gz ]
+				then
+		    		${FASTQC_BIN} -o ${STATSFOLDER} --noextract ${SAMPLEARR[$i]}_2_sequence.txt.gz
+				fi
+	    	fi
+	    	if [ -f ${SAMPLEARR[$i]}_sequence.bam ]
+	    	then
+				OUTPREFIX=${SAMPLEARR[$i]}
+				${DELLY}/src/stats -o ${STATSFOLDER}/${OUTPREFIX}.summary.txt -i ${STATSFOLDER}/${OUTPREFIX}.insert.txt ${SAMPLEARR[$i]}_sequence.bam
+				${DELLY}/src/stats -k -o ${STATSFOLDER}/${OUTPREFIX}.summary.cfg ${SAMPLEARR[$i]}_sequence.bam
+				Rscript ${DELLY}/R/isize.R ${STATSFOLDER}/${OUTPREFIX}.insert.txt
+	    	fi
+		done
     fi
 fi
 
