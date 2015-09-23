@@ -3,7 +3,7 @@ GCpipeline
 
 GCpipeline is a suite of tools taking as input illumina sequencing data (as bcl files) and producing fastq files as well as quality control metrics and plots. 
 The different steps are:
-* bcl to fastq convertion
+* bcl to fastq conversion
 * barcode demultiplexing (in-line or illumina multiplex scheme)
 * alignment to the genome of interest
 * quality control metrics and quality control plots
